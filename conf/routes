@@ -3,12 +3,6 @@
 # https://www.playframework.com/documentation/latest/ScalaRouting
 # ~~~~
 
-# An example controller showing a sample home page
-GET     /                           controllers.HomeController.index()
-
-# Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
-
 # Get all stocks
 GET    /stocks                      controllers.StockController.getStocks()
 
@@ -23,3 +17,12 @@ GET  /stocks/info                   controllers.StockInfoController.getAllStocks
 
 # Get a stocks history
 GET    /stocks/info/history/*id             controllers.StockInfoController.getStockHistory(id: String)
+
+# Get a stocks history
+GET    /stocks/info/averages/*id             controllers.StockInfoController.getStockAverage(id: String)
+
+# Get a stocks history
+GET    /stocks/info/averages             controllers.StockInfoController.getStockAverages()
+
+# Stock info websocket
+GET    /stocks/info/socket               controllers.StockSocketController.socket
