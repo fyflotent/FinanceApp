@@ -8,3 +8,18 @@ GET     /                           controllers.HomeController.index()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+
+# Get all stocks
+GET    /stocks                      controllers.StockController.getStocks()
+
+# Set a stock to watch
+POST   /stocks                      controllers.StockController.postStocks()
+
+# Remove a stock to watch
+DELETE /stocks/*id                  controllers.StockController.deleteStocks(id: String)
+
+# Get info for all stored stocks
+GET  /stocks/info                   controllers.StockInfoController.getAllStocks()
+
+# Get a stocks history
+GET    /stocks/info/history/*id             controllers.StockInfoController.getStockHistory(id: String)

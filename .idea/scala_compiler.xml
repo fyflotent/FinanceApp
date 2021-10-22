@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ScalaCompilerConfiguration">
-    <profile name="sbt 1" modules="financeapp_716" />
+    <profile name="sbt 1" modules="financeapp_8394" />
     <profile name="sbt 2" modules="FinanceApp">
       <option name="deprecationWarnings" value="true" />
       <option name="uncheckedWarnings" value="true" />
