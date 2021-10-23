@@ -1,5 +1,6 @@
 package controllers
 
+import ControllerUtils.JsonConverters._
 import ControllerUtils.ResultHelpers._
 import play.api.libs.json._
 import play.api.mvc._
@@ -14,27 +15,33 @@ class StockInfoController @Inject()(
   val stockInfoService: StockInfoService,
   val stockService: StockService,
 )(implicit ec: ExecutionContext) extends BaseController {
-  def getStockHistory(stockName: String) = Action {
-    tryOrFail(() => Ok(Json.stringify(
-      Json.toJson(stockInfoService.getStockHistory(stockName).map(e => e._1 -> e._2.high)))))
+
+  def getStockHistory(stockName: String): Action[AnyContent] = Action {
+    tryOrFail(() => Ok(
+      Json.toJson(stockInfoService.getStockHistory(stockName))))
   }
 
-  def getAllStocks() = Action {
-    val stocksToGet = stockService.getStocks()
-    val stockInfo = stockInfoService.getStocks(stocksToGet.toArray)
-    val stockMap = stockInfo.map(entry => entry._1 -> entry._2.high)
-    tryOrFail(() => Ok(Json.stringify(Json.toJson(stockMap))))
+  def getAllStocks: Action[AnyContent] = Action {
+    tryOrFail(() => {
+      val stocksToGet = stockService.getStocks()
+      val stockInfo = stockInfoService.getStocks(stocksToGet.toArray)
+      Ok(Json.toJson(stockInfo))
+    })
   }
 
-  def getStockAverage(stockName: String) = Action {
-    tryOrFail(() => Ok(s"$stockName ${stockInfoService.getStockAverage(stockName)}"))
+  def getStockAverage(stockName: String): Action[AnyContent] = Action {
+
+    tryOrFail(() => {
+      val num: BigDecimal = stockInfoService.getStockAverage(stockName)
+      val map = Map("average" -> s"$num")
+      Ok(Json.toJson(map))
+    })
   }
 
-  def getStockAverages() = Action.async {
+  def getStockAverages: Action[AnyContent] = Action.async {
     val stocks = stockService.getStocks()
     stockInfoService.getStockAverages(stocks.toList).map(m => {
-      //
-      Ok(Json.stringify(Json.toJson(m)))
+      Ok(Json.toJson(m))
     })
   }
 }

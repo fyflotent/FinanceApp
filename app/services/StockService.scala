@@ -5,16 +5,18 @@ import javax.inject._
 
 @Singleton
 class StockService {
-  val getStocks = () => stocks
+  @volatile private var stocks: Set[String] = Set()
 
-  val postStocks = (stockName: String) => {
+  def postStocks(stockName: String) = {
     stocks = stocks + stockName
   }
 
-  val deleteStocks = (stockName: String) => {
+  def deleteStocks(stockName: String) = {
     stocks = stocks - stockName
   }
 
-  @volatile private var stocks: Set[String] = Set()
+  def getStocks() = {
+    stocks
+  }
 
 }

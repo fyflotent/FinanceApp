@@ -1,20 +1,16 @@
 package services
 
-import yahoofinance.YahooFinance
-import yahoofinance.histquotes.HistoricalQuote
-import yahoofinance.quotes.stock.StockQuote
+import ControllerUtils._
 
 import java.text.SimpleDateFormat
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.jdk.CollectionConverters._
 
-case class HistoricalInfo(low: BigDecimal, high: BigDecimal)
+class StockInfoService @Inject()(private val scalaYahooFinance: ScalaYahooFinance) {
+  private val dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
 
-case class StockInfo(price: BigDecimal, low: BigDecimal, high: BigDecimal)
-
-class StockInfoService {
-  val getStockHistory: String => Map[String, HistoricalInfo] = stockName => {
-    val stockHistory = YahooFinance.get(stockName, true).getHistory().asScala.toList
+  def getStockHistory(stockName: String): Map[String, HistoricalInfo] = {
+    val stockHistory = scalaYahooFinance.get(stockName, refresh = true).getHistory
     val t = stockHistory.map(
       quote =>
         dateFormat.format(quote.getDate.getTime) -> historicalQuoteToInfo(quote)
@@ -22,35 +18,34 @@ class StockInfoService {
     t.toMap
   }
 
-  private val historicalQuoteToInfo: HistoricalQuote => HistoricalInfo = quote =>
+  private def historicalQuoteToInfo(quote: ScalaHistoricalQuote): HistoricalInfo = {
     HistoricalInfo(quote.getLow, quote.getHigh)
-
-  private val quoteToInfo: StockQuote => StockInfo = quote =>
-    StockInfo(quote.getPrice, quote.getDayLow, quote.getDayHigh)
-
-  private val dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss")
+  }
 
   def getStock(stockName: String): StockInfo = {
-    quoteToInfo(YahooFinance.get(stockName).getQuote)
+    quoteToInfo(scalaYahooFinance.get(stockName).getQuote)
+  }
+
+  private def quoteToInfo(quote: ScalaQuote): StockInfo = {
+    StockInfo(quote.getPrice, quote.getDayLow, quote.getDayHigh)
   }
 
   def getStocks(stockNames: Array[String]): Map[String, StockInfo] = {
-    YahooFinance.get(stockNames, true)
-      .asScala
-      .toMap
+    scalaYahooFinance.getStockList(stockNames, refresh = true)
       .map(entry => {
         val quote = entry._2.getQuote
         entry._1 -> quoteToInfo(quote)
       })
   }
 
-  def getStockAverages(stockNames: List[String])(implicit executionContext: ExecutionContext) = {
+  def getStockAverages(stockNames: List[String])
+    (implicit executionContext: ExecutionContext): Future[Map[String, BigDecimal]] = {
     Future.sequence(stockNames.map(stockName => Future {
       stockName -> getStockAverage(stockName)
     })).map(list => list.toMap)
   }
 
-  def getStockAverage(stockName: String) = {
-    BigDecimal(YahooFinance.get(stockName).getQuote.getPriceAvg200)
+  def getStockAverage(stockName: String): BigDecimal = {
+    scalaYahooFinance.get(stockName).getQuote.getPriceAvg200
   }
 }

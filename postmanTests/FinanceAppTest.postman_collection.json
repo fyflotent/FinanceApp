@@ -141,7 +141,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Stored Stocks",
+			"name": "Get New Stored Stocks",
 			"event": [
 				{
 					"listen": "test",
@@ -278,6 +278,103 @@
 						"stocks",
 						"info",
 						"averages"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Stock Infos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"  pm.expect(pm.response.code).to.eql(200);\r",
+							"});\r",
+							"\r",
+							"const expectStockObject = (json) => (stockName) => {\r",
+							"  pm.expect(typeof json[stockName] === \"object\").to.eql(true)\r",
+							"  pm.expect(typeof json[stockName][\"price\"] === \"number\")\r",
+							"  pm.expect(typeof json[stockName][\"low\"] === \"number\")\r",
+							"  pm.expect(typeof json[stockName][\"high\"] === \"number\")\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Success message is returned acknowledging the stock\", () => {\r",
+							"  const json = pm.response.json()\r",
+							"  pm.expect(Object.keys(json)).to.contain(\"AAPL\", \"TSLA\")\r",
+							"  const expectObject = expectStockObject(json)\r",
+							"  expectObject(\"AAPL\")\r",
+							"  expectObject(\"TSLA\")\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:9000/stocks/info",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"stocks",
+						"info"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Stock Histories",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"  pm.expect(pm.response.code).to.eql(200);\r",
+							"});\r",
+							"\r",
+							"const expectStockObject = (json) => (stockName) => {\r",
+							"  pm.expect(typeof json[stockName] === \"object\").to.eql(true)\r",
+							"  pm.expect(typeof json[stockName][\"low\"] === \"number\").to.eql(true)\r",
+							"  pm.expect(typeof json[stockName][\"high\"] === \"number\").to.eql(true)\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Success message is returned acknowledging the stock\", () => {\r",
+							"  const json = pm.response.json()\r",
+							"  pm.expect(Object.keys(json).length).to.be.greaterThan(0)\r",
+							"  const expectObject = expectStockObject(json)\r",
+							"  Object.keys(json).forEach(key => {\r",
+							"    pm.expect(key).to.match(/\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d/)\r",
+							"    expectObject(key)\r",
+							"  })\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:9000/stocks/info/history/TSLA",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"stocks",
+						"info",
+						"history",
+						"TSLA"
 					]
 				}
 			},

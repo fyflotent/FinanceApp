@@ -1,11 +1,11 @@
 package services
 
+import ControllerUtils.JsonConverters._
 import akka.actor._
 import play.api.libs.json.Json
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
-
 
 object StockSocketServiceActor {
   def props(out: ActorRef, stockService: StockService, stockInfoService: StockInfoService)
@@ -29,7 +29,7 @@ class StockSocketServiceActor(
           val stocks = stockService.getStocks()
           if (stocks.nonEmpty) {
             val stockInfos = stockInfoService.getStocks(stocks.toArray)
-            val stockMap = stockInfos.map(entry => entry._1 -> entry._2.price)
+            val stockMap = stockInfos
             out ! Json.stringify(Json.toJson(stockMap))
           } else {
             out ! "No Stocks set"
