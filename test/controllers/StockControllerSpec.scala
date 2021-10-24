@@ -10,10 +10,11 @@ import play.api.test.Helpers._
 import play.api.test._
 import services.{StockInfoService, StockService}
 
-class StockInfoControllerSpec
+
+class StockControllerSpec
   extends PlaySpec with GuiceOneAppPerTest with Injecting with MockitoSugar {
-  "StockController#getStocks" should {
-    "should retrieve a stock list" in {
+  "StockController#postStocks" should {
+    "should post a new stock" in {
       val mockStockInfoService = mock[StockInfoService]
       val mockStockService = mock[StockService]
       when(mockStockInfoService.getStock(anyString()))
@@ -44,6 +45,37 @@ class StockInfoControllerSpec
       status(result) mustBe BAD_REQUEST
       contentType(result) mustBe Some("text/plain")
       contentAsString(result) mustBe "FAILURE"
+    }
+  }
+
+  "StockController#getStocks" should {
+    "should retrieve a stock list" in {
+      val mockStockInfoService = mock[StockInfoService]
+      val mockStockService = mock[StockService]
+      when(mockStockService.getStocks()).thenReturn(Set("STCK"))
+      val controller = new StockController(
+        stubControllerComponents(), mockStockService, mockStockInfoService)
+
+      val result = controller.getStocks.apply(FakeRequest(GET, "/"))
+
+      status(result) mustBe OK
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) mustBe """["STCK"]"""
+    }
+  }
+
+  "StockController#deleteStocks" should {
+    "should retrieve a stock list" in {
+      val mockStockInfoService = mock[StockInfoService]
+      val mockStockService = mock[StockService]
+      val controller = new StockController(
+        stubControllerComponents(), mockStockService, mockStockInfoService)
+
+      val result = controller.deleteStocks("STCK").apply(FakeRequest(GET, "/"))
+
+      status(result) mustBe OK
+      contentType(result) mustBe Some("text/plain")
+      contentAsString(result) mustBe "Deleted STCK"
     }
   }
 }

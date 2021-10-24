@@ -10,7 +10,7 @@ import java.util.Date
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class StockInfoServiceSpec extends PlaySpec with MockitoSugar with ScalaFutures {
-  "StockService#getStockHistory" should {
+  "StockInfoServiceSpec#getStockHistory" should {
     "return historical info for a stock" in {
       val mockYahooFinance = mock[ScalaYahooFinance]
       val mockScalaStock = mock[ScalaStock]
@@ -29,7 +29,7 @@ class StockInfoServiceSpec extends PlaySpec with MockitoSugar with ScalaFutures 
     }
   }
 
-  "StockService#getStock" should {
+  "StockInfoServiceSpec#getStock" should {
     "return the a stock's quote information" in {
       val mockYahooFinance = mock[ScalaYahooFinance]
       val mockScalaStock = mock[ScalaStock]
@@ -45,7 +45,7 @@ class StockInfoServiceSpec extends PlaySpec with MockitoSugar with ScalaFutures 
     }
   }
 
-  "StockService#getStocks" should {
+  "StockInfoServiceSpec#getStocks" should {
     "return the a map of stock information" in {
       val mockYahooFinance = mock[ScalaYahooFinance]
       val mockScalaStock = mock[ScalaStock]
@@ -63,7 +63,7 @@ class StockInfoServiceSpec extends PlaySpec with MockitoSugar with ScalaFutures 
     }
   }
 
-  "StockService#getStockAverage" should {
+  "StockInfoServiceSpec#getStockAverage" should {
     "return the a map of stock information" in {
       val mockYahooFinance = mock[ScalaYahooFinance]
       val mockScalaStock = mock[ScalaStock]
@@ -77,7 +77,7 @@ class StockInfoServiceSpec extends PlaySpec with MockitoSugar with ScalaFutures 
     }
   }
 
-  "StockService#getStockAverages" should {
+  "StockInfoServiceSpec#getStockAverages" should {
     "return the a map of stock information" in {
       val mockYahooFinance = mock[ScalaYahooFinance]
       val mockScalaStock = mock[ScalaStock]

@@ -1,8 +1,7 @@
 package services
 
-import ControllerUtils.JsonConverters._
+import ControllerUtils.StockInfo
 import akka.actor._
-import play.api.libs.json.Json
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
@@ -30,19 +29,22 @@ class StockSocketServiceActor(
           if (stocks.nonEmpty) {
             val stockInfos = stockInfoService.getStocks(stocks.toArray)
             val stockMap = stockInfos
-            out ! Json.stringify(Json.toJson(stockMap))
+            out ! Right(stockMap)
           } else {
-            out ! "No Stocks set"
+            out ! Right(Map[String, StockInfo]())
           }
 
         })
         cancellables = cancellables + cancellable
-        out ! "Subscription Added"
+        out ! Left("Subscription Added")
 
       case "unsubscribe" =>
         cancellables.foreach(cancellable => cancellable.cancel())
         cancellables = Set()
-        out ! "Cleared subscriptions"
+        out ! Left("Cleared subscriptions")
+      case m => {
+        println(s"Unrecognized message $m")
+      }
     }
   }
 

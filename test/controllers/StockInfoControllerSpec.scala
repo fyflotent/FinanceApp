@@ -28,7 +28,7 @@ class StockInfoControllerSpec
 
       status(result) mustBe OK
       contentType(result) mustBe Some("application/json")
-      contentAsString(result) mustBe "{\"STCK\":{\"low\":1,\"high\":2}}"
+      contentAsString(result) mustBe """{"STCK":{"low":1,"high":2}}"""
     }
 
     "return bad request if stock retrieval fails" in {
@@ -62,7 +62,7 @@ class StockInfoControllerSpec
 
       status(result) mustBe OK
       contentType(result) mustBe Some("application/json")
-      contentAsString(result) mustBe "{\"STCK\":{\"[price\":1.5,\"]low\":1,\"high\":2}}"
+      contentAsString(result) mustBe """{"STCK":{"price":1.5,"low":1,"high":2}}"""
     }
 
     "return bad request if stock retrieval fails" in {
@@ -96,7 +96,7 @@ class StockInfoControllerSpec
 
       status(result) mustBe OK
       contentType(result) mustBe Some("application/json")
-      contentAsString(result) mustBe "{\"average\":\"10\"}"
+      contentAsString(result) mustBe """{"average":10}"""
     }
 
     "return bad request if stock retrieval fails" in {

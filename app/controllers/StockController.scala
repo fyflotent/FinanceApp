@@ -1,7 +1,7 @@
 package controllers
 
 import ControllerUtils.ResultHelpers
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._
 import services.{StockInfoService, StockService}
 
@@ -18,11 +18,11 @@ class StockController @Inject()(
 ) extends BaseController {
 
 
-  def getStocks() = Action {
-    ResultHelpers.tryOrFail(() => Ok(stockService.getStocks().mkString(",")))
+  def getStocks: Action[AnyContent] = Action {
+    ResultHelpers.tryOrFail(() => Ok(Json.toJson(stockService.getStocks().toArray)))
   }
 
-  def postStocks() = Action { implicit request =>
+  def postStocks(): Action[AnyContent] = Action { implicit request =>
     val body: AnyContent = request.body
     val jsonBody: Option[JsValue] = body.asJson
 
@@ -30,7 +30,6 @@ class StockController @Inject()(
       ResultHelpers.tryOrFail(
         () => {
           val newStock = (json \ "stock").as[String]
-          println(s"Received new stock $newStock")
           stockInfoService.getStock(newStock) // Check if stock exists
           stockService.postStocks(newStock)
           Ok(s"Got $newStock")
@@ -40,7 +39,7 @@ class StockController @Inject()(
     }
   }
 
-  def deleteStocks(id: String) = Action { implicit request =>
+  def deleteStocks(id: String): Action[AnyContent] = Action { implicit request =>
     ResultHelpers.tryOrFail(() => {
       stockService.deleteStocks(id)
       Ok(s"Deleted $id")

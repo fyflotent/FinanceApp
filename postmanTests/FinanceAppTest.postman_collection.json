@@ -17,7 +17,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Body is empty\", () => {\r",
-							"  pm.expect(pm.response.text()).to.eql(\"\")\r",
+							"  pm.expect(pm.response.json()).to.eql([])\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -151,8 +151,8 @@
 							"  pm.expect(pm.response.code).to.eql(200);\r",
 							"});\r",
 							"\r",
-							"pm.test(\"Body is empty\", () => {\r",
-							"  pm.expect(pm.response.text()).to.eql(\"TSLA\")\r",
+							"pm.test(\"Body is contains only successfully added stocks\", () => {\r",
+							"  pm.expect(pm.response.json()).to.eql([\"TSLA\"])\r",
 							"});"
 						],
 						"type": "text/javascript"

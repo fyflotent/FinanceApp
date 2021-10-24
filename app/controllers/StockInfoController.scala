@@ -33,8 +33,7 @@ class StockInfoController @Inject()(
 
     tryOrFail(() => {
       val num: BigDecimal = stockInfoService.getStockAverage(stockName)
-      val map = Map("average" -> s"$num")
-      Ok(Json.toJson(map))
+      Ok(Json.toJson(Map("average" -> num)))
     })
   }
 
